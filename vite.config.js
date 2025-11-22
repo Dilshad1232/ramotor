@@ -10,4 +10,8 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        outDir: 'public/dist', // yahan dist set karo
+        emptyOutDir: true,
+    },
 });
