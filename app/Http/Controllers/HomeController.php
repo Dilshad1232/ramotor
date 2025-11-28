@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -18,7 +19,8 @@ class HomeController extends Controller
 
     public function services()
     {
-        return view('services');
+        $services = Service::all(); // DB se saare services le lo
+        return view('services', compact('services')); // variable blade me bhejo
     }
 
     public function contact()
@@ -33,20 +35,13 @@ class HomeController extends Controller
     {
         return view('team');
     }
-    public function testamonial()
+    public function testimonial()
     {
-        return view('testamonial');
+        return view('testimonial');
     }
     public function notFound()
     {
         return view('404');
     }
-    // public function login()
-    // {
-    //     return view('login');
-    // }
-    // public function register()
-    // {
-    //     return view('register');
-    // }
+
 }

@@ -66,7 +66,7 @@ class AuthController extends Controller
             'role'=>'user',
             'status'=>1
         ]);
-
+  
         // $token = $user->createToken('API_TOKEN')->plainTextToken;
         // Auth::login($user); // Auto login
         // return response()->json(['status'=>true,'message'=>'Registration Successful','token'=>$token,'user'=>$user->makeHidden(['password'])],201);

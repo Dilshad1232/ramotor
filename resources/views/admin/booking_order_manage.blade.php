@@ -1,58 +1,8 @@
 @extends('admin.main')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'Customer List')
 
 @section('content')
-{{-- <h1 style="margin-bottom:25px;color:#ff4d4d;text-shadow:1px 1px 2px #000;">Admin Dashboard</h1> --}}
-
-<h1 style="margin-bottom:25px;color:#ff4d4d;text-shadow:1px 1px 2px #000;">Admin Dashboard</h1>
-
-<div class="dashboard-cards-2">
-
-    <div class="card-3d-2">
-        <div class="card-front">
-            <div class="card-icon">🚗</div>
-            <p>Total Customers</p>
-            <h3>{{ $totalCustomers }}</h3>
-        </div>
-    </div>
-
-    <div class="card-3d-2">
-        <div class="card-front">
-            <div class="card-icon">🛠️</div>
-            <p>Booked Services</p>
-            <h3>{{ $totalBookedServices }}</h3>
-        </div>
-    </div>
-
-    <div class="card-3d-2">
-        <div class="card-front">
-            <div class="card-icon">🎨</div>
-            <p>Pending Services</p>
-            <h3>{{ $pendingServices }}</h3>
-        </div>
-    </div>
-
-    <div class="card-3d-2">
-        <div class="card-front">
-            <div class="card-icon">⭐</div>
-            <p>Completed Services</p>
-            <h3>{{ $completedServices }}</h3>
-        </div>
-    </div>
-
-    <div class="card-3d-2">
-        <div class="card-front">
-            <div class="card-icon">📅</div>
-            <p>Today Appointments </p>
-            <h3>{{ $todayAppointments }}</h3>
-        </div>
-    </div>
-
-
-
-</div>
-
 <h2 style="color:#ff4d4d; margin-bottom:15px;">Latest Booked Services</h2>
 
 {{-- Search & Limit --}}
@@ -66,9 +16,9 @@
     <button type="submit" style="background:#ff4d4d;color:white;padding:5px 10px;border:none;border-radius:5px;">Apply</button>
 </form>
 
-<div class="card" style="padding:15px; overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; color:white;">
-        <thead style="background:#ff4d4d;">
+<div class="card" style="padding:15px; overflow-x:auto;background:#531616;">
+    <table style="width:100%; border-collapse:collapse; color:rgb(255, 255, 255);">
+        <thead style="background:#b51313;">
             <tr>
                 <th style="padding:8px;">#</th>
                 <th style="padding:8px;">Name</th>
@@ -84,7 +34,7 @@
         </thead>
         <tbody style="font-size: smaller;">
             @foreach($latestBookings as $i => $booking)
-            <tr style="border-bottom:1px solid #444;">
+            <tr style="border-bottom:1px solid hsl(0, 54%, 95%);">
                 <td style="padding:8px;">{{ $latestBookings->firstItem() + $i }}</td>
                 <td style="padding:8px;">{{ Str::limit($booking->name, 15) }}</td>
                 <td style="padding:8px;">{{ Str::limit($booking->email, 20) }}</td>
@@ -102,7 +52,7 @@
                         <span style="color:red;font-weight:bold;">Rejected</span>
                     @endif
                     <br>
-                    <button onclick="showModal({{ $booking }})" style="margin-top:5px; background:#ff4d4d;color:white;padding:2px 5px;border:none;border-radius:5px; font-size:0.6rem;">View</button>
+                    <button onclick="showModal({{ $booking }})" style="margin-top:5px; background:#ff4d4d;color:white;padding:2px 5px;border:none;border-radius:5px; font-size:0.6rem;">Read More</button>
                 </td>
                 <td style="padding:8px; display:flex; gap:2px;">
                     <form action="{{ route('admin.booking.approve', $booking->id) }}" method="POST" style="display:inline;">
@@ -173,62 +123,6 @@ function closeModal(){
 }
 </style>
 
-
-
-<style>
-.dashboard-cards-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-    margin-bottom: 40px;
-}
-
-/* 3D Pop Card Design */
-.card-3d-2 {
-    perspective: 1000px;
-    height: 120px;
-}
-
-.card-front {
-    background: linear-gradient(145deg, #ff4d4d, #ff1a1a);
-    border-radius: 15px;
-    height: 100%;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 -5px 10px rgba(255,255,255,0.1);
-    transition: transform 0.4s, box-shadow 0.4s;
-    transform-style: preserve-3d;
-}
-
-.card-3d-2:hover .card-front {
-    transform: rotateY(10deg) rotateX(5deg) scale(1.05);
-    box-shadow: 0 15px 25px rgba(0,0,0,0.8), 0 -5px 15px rgba(255,255,255,0.15);
-}
-
-.card-icon {
-    font-size: 28px;
-    margin-bottom: 5px;
-    transition: transform 0.4s;
-}
-
-.card-3d-2:hover .card-icon {
-    transform: rotateZ(15deg) scale(1.2);
-}
-
-.card-front p {
-    margin: 0;
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.card-front h3 {
-    margin: 3px 0 0 0;
-    font-size: 1.1rem;
-}
-</style>
-
 @endsection
+
+esko ab next level design kro mobile view me abhi achha dikhe mast

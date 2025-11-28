@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,13 +19,22 @@ Route::get('/team',[HomeController::class,'team'])->name('team');
 Route::get('/testimonial',[HomeController::class,'testimonial'])->name('testimonial');
 Route::get('/404',[HomeController::class,'notFound'])->name('notFound');
 
+
+Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
+
 // Guest routes (login/register)
 Route::middleware('guest:web')->group(function(){
     Route::get('login',[AuthController::class,'showLogin'])->name('login');
-    Route::get('register',[AuthController::class,'showRegister'])->name('register');
     Route::post('login',[AuthController::class,'login'])->name('login.submit');
+    Route::get('register',[AuthController::class,'showRegister'])->name('register');
     Route::post('register',[AuthController::class,'register'])->name('register.submit');
+
 });
+
+
+
+
 
 
 // Logout route (auth)
@@ -36,4 +48,34 @@ Route::middleware(['auth:web','user'])->group(function(){
 // Protected Admin routes
 Route::middleware(['auth:web','admin'])->group(function(){
     Route::get('/admin/dashboard',[AdminDashboardController::class,'index'])->name('admin.dashboard');
+    Route::get('/admin/customers',[AdminDashboardController::class,'customers'])->name('admin.customers');
+    Route::get('/admin/customer/{id}', [AdminDashboardController::class, 'customerDetails'])->name('admin.customer.details');
+    Route::delete('/admin/customer/delete/{id}', [AdminDashboardController::class, 'deleteCustomer'])->name('admin.customer.delete');
+
+    Route::get('/admin/services/create', [ServiceController::class, 'create'])->name('admin.services');
+    Route::post('/admin/services/store', [ServiceController::class, 'store'])->name('admin.services.store'); // admin form
+// Edit Page
+Route::get('/admin/services/{id}/edit', [ServiceController::class, 'edit'])->name('admin.services.edit');
+
+// Update
+Route::put('/admin/services/{id}', [ServiceController::class, 'update'])->name('admin.services.update');
+
+// Delete
+Route::delete('/admin/services/{id}', [ServiceController::class, 'delete'])->name('admin.services.delete');
+Route::post('admin/booking/{id}/approve', [AdminDashboardController::class, 'approveBooking'])->name('admin.booking.approve');
+Route::post('admin/booking/{id}/reject', [AdminDashboardController::class, 'rejectBooking'])->name('admin.booking.reject');
+Route::get('/admin/bookings', [AdminDashboardController::class, 'bookings'])->name('admin.bookings');
+Route::get('/admin/mechanic', [AdminDashboardController::class, 'add_mechanic'])->name('admin.mechanic');
+Route::post('admin/mechanics', [AdminDashboardController::class, 'mechanic_store'])->name('admin.mechanic.store');
+Route::delete('admin/mechanics/{id}', [AdminDashboardController::class, 'mechanic_destroy'])->name('admin.mechanic.destroy');
+
+Route::get('admin/mechanics/specializations', [AdminDashboardController::class, 'mechanic_specializations'])->name('admin.mechanic.specializations');
+
+
+// Admin profile routes
+// web.php
+Route::get('admin/profile', [AdminDashboardController::class, 'profile'])->name('admin.profile');
+Route::post('admin/profile/update', [AdminDashboardController::class, 'profile_update'])->name('admin.profile.update');
+Route::get('admin/profile/edit', [AdminDashboardController::class, 'profile_edit'])->name('admin.profile.edit');
+
 });

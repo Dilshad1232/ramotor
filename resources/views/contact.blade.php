@@ -59,30 +59,39 @@
             </div>
             <div class="col-md-6">
                 <div class="wow fadeInUp" data-wow-delay="0.2s">
-                    <p class="mb-4">The contact form is currently inactive. Get a functional and working contact form with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p>
-                    <form>
+                    <p class="mb-4">
+                        Have questions or need support? Reach out to us and our team will get back to you promptly.
+                    </p>
+                    <form action="{{ route('contact.store') }}" method="POST">
+                        @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Your Name">
                                     <label for="name">Your Name</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="Your Email">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email">
                                     <label for="email">Your Email</label>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
                                     <label for="subject">Subject</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone">
+                                    <label for="phone">Phone</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 100px"></textarea>
+                                    <textarea class="form-control" name="message" placeholder="Leave a message here" id="message" style="height: 100px"></textarea>
                                     <label for="message">Message</label>
                                 </div>
                             </div>
@@ -97,5 +106,22 @@
     </div>
 </div>
 <!-- Contact End -->
+@if(session('success'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Swal.fire({
+        title: 'Message Sent!',
+        icon: 'success',
+        html: `
+            <b>Name:</b> {{ session('name') }} <br>
+            <b>Email:</b> {{ session('email') }} <br>
+            <b>Subject:</b> {{ session('subject') }} <br>
+            <b>Phone:</b> {{ session('phone') }} <br>
+            <b>Message:</b> {{ session('message_text') }}
+        `,
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
 
 @endsection
