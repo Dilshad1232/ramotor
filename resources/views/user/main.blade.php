@@ -6,6 +6,11 @@
 <title>@yield('title', 'User Dashboard')</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif;}
 body{display:flex;flex-direction:column;min-height:100vh;background:#121212;color:#fff;}
@@ -31,16 +36,7 @@ header{
 
 /* Sidebar */
 .container{display:flex;flex:1;overflow:hidden;}
-.sidebar{
-    width:220px;background:#1c1c1c;flex-shrink:0;
-    display:flex;flex-direction:column;position:fixed;top:60px;bottom:0;left:0;overflow-y:auto;
-    transition:0.3s;border-right:2px solid #ff4d4d;
-}
-
-
-
-
-/* Sidebar 3D Redesign */
+/* Sidebar */
 .sidebar {
     width: 240px;
     background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
@@ -55,38 +51,41 @@ header{
     transition: 0.3s;
     border-right: 3px solid #ff4d4d;
     box-shadow: 8px 0 20px rgba(0,0,0,0.6);
-    /* border-radius: 0 20px 20px 0; 3D rounded edge effect */
 }
 
 /* Sidebar Links */
 .sidebar nav a {
     padding: 18px 25px;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
     color: white;
+    font-size: 15px;
     font-weight: 500;
     border-left: 6px solid transparent;
     transition: all 0.3s ease;
-    margin: 4px 8px;
+    margin: 6px 10px;
     border-radius: 10px;
     background: linear-gradient(145deg, #222, #1c1c1c);
     box-shadow: inset 0 0 5px rgba(255,255,255,0.05), 0 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Hover Effect - Pop out 3D look */
+/* Hover Effect */
 .sidebar nav a:hover {
     background: linear-gradient(145deg, #ff4d4d, #d32f2f);
-    border-left: 6px solid #fff;
-    transform: translateX(5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    border-left: 6px solid #ffffff;
+    transform: translateX(8px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(255,0,0,0.5);
 }
 
-/* Active link effect */
+/* Active link */
 .sidebar nav a.active {
     background: linear-gradient(145deg, #ff6666, #ff1a1a);
     border-left: 6px solid #fff;
 }
 
-/* Scrollbar customization */
+/* Scrollbar */
 .sidebar::-webkit-scrollbar {
     width: 8px;
 }
@@ -98,22 +97,10 @@ header{
     background: #1c1c1c;
 }
 
-
-
-
-
-
-
-
-
-
-
-.sidebar.active{left:-250px;}
-.sidebar nav a{
-    padding:15px 20px;display:block;color:white;font-weight:500;border-left:4px solid transparent;
-    transition:0.3s;margin:2px 0;border-radius:5px;
+/* Mobile collapsed */
+.sidebar.active {
+    left: -250px;
 }
-.sidebar nav a:hover{background:#ff4d4d;border-left:4px solid #fff;}
 
 /* Main content */
 .main-content{margin-left:220px;flex:1;padding:30px;overflow-y:auto;background:#121212;transition:0.3s;min-height:calc(100vh - 60px);}
@@ -134,15 +121,24 @@ footer{background:#ff1a1a;text-align:center;color:white;padding:15px;margin-top:
 
 <header>
     <div class="menu-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></div>
-    <div class="logo">Car Garage</div>
+    <div class="logo">User Dashboard</div>
     <div class="user-menu" onclick="toggleDropdown()">
         {{ auth()->user()->name ?? 'User' }}
         <img src="{{ Auth::user()->profile_image ? asset('uploads/profile/' . Auth::user()->profile_image) : asset('default.png') }}" alt="User">
-        <div class="user-dropdown" id="user-dropdown">
-            <a href="#">Profile</a>
-            <a href="#">Settings</a>
-            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-        </div>
+      <div class="user-dropdown" id="user-dropdown">
+    <a href="{{ route('user.profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+    <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+
+    <a href="#"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <i class="fa-solid fa-sign-out"></i> Logout
+    </a>
+</div>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+    @csrf
+</form>
+
     </div>
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
 </header>
@@ -150,14 +146,25 @@ footer{background:#ff1a1a;text-align:center;color:white;padding:15px;margin-top:
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <nav>
-            <a href="#">Dashboard</a>
-            <a href="#">Book Service</a>
-            <a href="#">My Services</a>
-            <a href="#">Invoices</a>
-            <a href="#">Statistics</a>
-            <a href="#">Contact</a>
+            <a href="{{ route('user.dashboard') }}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="{{ route('user.book-service') }}"><i class="fa-solid fa-car"></i> Book Service</a>
+            <a href="{{ route('user.services') }}"><i class="fa-solid fa-list-check"></i> My Services</a>
+            <a href="{{ route('user.invoice') }}"><i class="fa-solid fa-file-invoice"></i> Invoices</a>
+            <a href="{{ route('user.statistics') }}"><i class="fa-solid fa-chart-pie"></i> Statistics</a>
+            <a href="{{ route('user.contact') }}"><i class="fa-solid fa-headset"></i> Contact</a>
+            <a href="{{ route('user.profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+            <a href="#"><i class="fa-solid fa-cog"></i> Settings</a>
+            <a href="#" onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();">
+                <i class="fa-solid fa-sign-out"></i> Logout
+            </a>
+
+            <form id="sidebar-logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+
         </nav>
     </aside>
+
     <main class="main-content">
         @yield('content')
     </main>
@@ -181,6 +188,6 @@ document.addEventListener('click', function(e){
     if(!menu.contains(e.target)){ dropdown.style.display = 'none'; }
 });
 </script>
-
+@yield('scripts')
 </body>
 </html>

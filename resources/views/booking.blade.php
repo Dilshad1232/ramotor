@@ -79,52 +79,83 @@
 @endif
 
                         <h1 class="text-white mb-4">Book For A Service</h1>
-                        <form action="{{ route('booking.store') }}" method="POST">
+                        <form action="{{ route('booking.store') }}" method="POST" class="needs-validation" novalidate>
                             @csrf
                             <div class="row g-3">
+
                                 <div class="col-12 col-sm-6">
-                                    <input type="text" name="name" class="form-control border-0" placeholder="Your Name" style="height: 55px;">
+                                    <input type="text" name="name" class="form-control border-0" placeholder="Your Name" style="height: 55px;" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your name.
+                                    </div>
                                 </div>
+
                                 <div class="col-12 col-sm-6">
-                                    <input type="email" name="email" class="form-control border-0" placeholder="Your Email" style="height: 55px;">
+                                    <input type="email" name="email" class="form-control border-0" placeholder="Your Email" style="height: 55px;" required>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email.
+                                    </div>
                                 </div>
+
                                 <div class="col-12 col-sm-6">
-                                    <select class="form-select border-0" name="service" style="height: 55px;">
-                                        <option selected>Select A Service</option>
+                                    <select class="form-select border-0" name="service" style="height: 55px;" required>
+                                        <option value="">Select A Service</option>
                                         <option value="Painting">Painting</option>
                                         <option value="Denting">Denting</option>
                                         <option value="Engine Repair">Engine Repair</option>
                                     </select>
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <div class="date" id="date1" data-target-input="nearest">
-                                        <input type="date" name="service_date"
-                                            class="form-control border-0 datetimepicker-input"
-                                            placeholder="Service Date" data-target="#date1" data-toggle="datetimepicker" style="height: 55px;">
+                                    <div class="invalid-feedback">
+                                        Please select a service.
                                     </div>
                                 </div>
+
                                 <div class="col-12 col-sm-6">
-                                    <div class="date" id="date1" data-target-input="nearest">
-                                        <input type="text" name="phone"
-                                            class="form-control border-0 datetimepicker-input"
-                                            placeholder="Mobile" data-target="#mobile" data-toggle="datetimepicker" style="height: 55px;">
+                                    <input type="date" name="service_date" class="form-control border-0" style="height: 55px;" required>
+                                    <div class="invalid-feedback">
+                                        Please choose a service date.
                                     </div>
                                 </div>
+
                                 <div class="col-12 col-sm-6">
-                                    <div class="date" id="date1" data-target-input="nearest">
-                                        <input type="text" name="address"
-                                            class="form-control border-0 datetimepicker-input"
-                                            placeholder="Address" data-target="#date1" data-toggle="datetimepicker" style="height: 55px;">
+                                    <input type="tel" name="phone" class="form-control border-0" placeholder="Mobile" style="height: 55px;" required pattern="[0-9]{10}">
+                                    <div class="invalid-feedback">
+                                        Please enter a valid 10-digit phone number.
                                     </div>
                                 </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <input type="text" name="address" class="form-control border-0" placeholder="Address" style="height: 55px;">
+                                </div>
+
                                 <div class="col-12">
-                                <textarea class="form-control border-0" name="special_request" placeholder="Special Request"></textarea>
+                                    <textarea class="form-control border-0" name="special_request" placeholder="Special Request"></textarea>
                                 </div>
+
                                 <div class="col-12">
                                     <button class="btn btn-secondary w-100 py-3" type="submit">Book Now</button>
                                 </div>
+
                             </div>
                         </form>
+
+                        <script>
+                        // Bootstrap 5 custom validation
+                        (function () {
+                            'use strict'
+                            var forms = document.querySelectorAll('.needs-validation')
+                            Array.prototype.slice.call(forms)
+                                .forEach(function (form) {
+                                    form.addEventListener('submit', function (event) {
+                                        if (!form.checkValidity()) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                        }
+                                        form.classList.add('was-validated')
+                                    }, false)
+                                })
+                        })();
+                        </script>
+
                     </div>
                 </div>
             </div>

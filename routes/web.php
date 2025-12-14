@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -14,12 +15,12 @@ Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/about',[HomeController::class,'about'])->name('about');
 Route::get('/services',[HomeController::class,'services'])->name('services');
 Route::get('/contact',[HomeController::class,'contact'])->name('contact');
-Route::get('/booking',[HomeController::class,'booking'])->name('booking');
+Route::get('/booking',[BookingController::class,'booking'])->name('booking');
 Route::get('/team',[HomeController::class,'team'])->name('team');
 Route::get('/testimonial',[HomeController::class,'testimonial'])->name('testimonial');
 Route::get('/404',[HomeController::class,'notFound'])->name('notFound');
 
-
+// Route::post('/home/booking/store', [BookingController::class, 'homebookingstore'])->name('home.booking.store');
 Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
 Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
 
@@ -43,6 +44,22 @@ Route::post('logout',[AuthController::class,'logout'])->middleware('auth')->name
 // Protected User routes
 Route::middleware(['auth:web','user'])->group(function(){
     Route::get('/user/dashboard',[UserDashboardController::class,'index'])->name('user.dashboard');
+
+// Admin profile routes
+// web.php
+Route::get('user/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
+Route::post('user/profile/update', [UserDashboardController::class, 'profile_update'])->name('user.profile.update');
+Route::get('user/profile/edit', [UserDashboardController::class, 'profile_edit'])->name('user.profile.edit');
+Route::get('user/invoice', [UserDashboardController::class, 'invoice'])->name('user.invoice');
+
+// my services
+Route::get('/user/services', [UserDashboardController::class, 'my_services'])->name('user.services');
+Route::get('/user/book-service', [UserDashboardController::class, 'book_service'])->name('user.book-service');
+Route::post('/user/booking/cancel/{id}', [UserDashboardController::class, 'cancel_booking'])->name('user.booking.cancel');
+Route::get('/user/schedule-service', [UserDashboardController::class, 'schedule_service'])->name('user.schedule_service');
+Route::put('/user/reschedule/{id}', [UserDashboardController::class, 'reschedule_service'])->name('user.reschedule_service');
+Route::get('/user/statistics', [UserDashboardController::class, 'statistics'])->name('user.statistics');
+Route::get('/user/contact', [UserDashboardController::class, 'contact'])->name('user.contact');
 });
 
 // Protected Admin routes
@@ -71,11 +88,30 @@ Route::delete('admin/mechanics/{id}', [AdminDashboardController::class, 'mechani
 
 Route::get('admin/mechanics/specializations', [AdminDashboardController::class, 'mechanic_specializations'])->name('admin.mechanic.specializations');
 
+//add user
+Route::get('admin/add-user', [AdminDashboardController::class, 'add_user'])->name('admin.add-user');
+Route::post('admin/user/store', [AdminDashboardController::class, 'user_store'])->name('admin.user.store');
 
 // Admin profile routes
 // web.php
 Route::get('admin/profile', [AdminDashboardController::class, 'profile'])->name('admin.profile');
 Route::post('admin/profile/update', [AdminDashboardController::class, 'profile_update'])->name('admin.profile.update');
 Route::get('admin/profile/edit', [AdminDashboardController::class, 'profile_edit'])->name('admin.profile.edit');
-
+Route::get('admin/bill', [AdminDashboardController::class, 'bill'])->name('admin.bill');
+Route::get('admin/search-user', [AdminDashboardController::class, 'searchUser'])->name('admin.search-user');
+Route::get('admin/contactview', [AdminDashboardController::class, 'contactView'])->name('admin.contactview');
+Route::delete('admin/contact/delete/{id}', [AdminDashboardController::class, 'contactdestroy'])
+    ->name('admin.contact.delete');
 });
+
+
+// Razorpay Payment Routes
+Route::get('/payment/{booking_id}', [PaymentController::class, 'pay'])->name('payment');
+Route::post('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/booking/confirmation/{id}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+// Receipt route
+Route::get('/booking/receipt/{id}', [PaymentController::class, 'receipt'])->name('booking.receipt');
+
+// payment verification route
+Route::post('/payment/verify', [BookingController::class, 'verifyPayment'])->name('payment.verify');
+

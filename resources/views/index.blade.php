@@ -344,39 +344,50 @@
                     <div class="bg-primary h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn"
                         data-wow-delay="0.6s">
                         <h1 class="text-white mb-4">Book For A Service</h1>
-                        <form>
+                        <form action="{{ route('booking.store') }}" method="POST">
+                            @csrf
+
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
                             <div class="row g-3">
                                 <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control border-0" placeholder="Your Name"
-                                        style="height: 55px;">
+                                    <input type="text" name="name" class="form-control border-0" placeholder="Your Name" style="height: 55px;">
                                 </div>
                                 <div class="col-12 col-sm-6">
-                                    <input type="email" class="form-control border-0" placeholder="Your Email"
-                                        style="height: 55px;">
+                                    <input type="email" name="email" class="form-control border-0" placeholder="Your Email" style="height: 55px;">
                                 </div>
                                 <div class="col-12 col-sm-6">
-                                    <select class="form-select border-0" style="height: 55px;">
+                                    <select class="form-select border-0" name="service" style="height: 55px;">
                                         <option selected>Select A Service</option>
-                                        <option value="1">Denting & Painting</option>
-                                        <option value="2">Glass Replacement</option>
-                                        <option value="3">Interior Polish</option>
+                                        <option value="Painting">Painting</option>
+                                        <option value="Denting">Denting</option>
+                                        <option value="Engine Repair">Engine Repair</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-sm-6">
                                     <div class="date" id="date1" data-target-input="nearest">
-                                        <input type="text" class="form-control border-0 datetimepicker-input"
-                                            placeholder="Service Date" data-target="#date1" data-toggle="datetimepicker"
-                                            style="height: 55px;">
+                                        <input type="date" name="service_date" class="form-control border-0" placeholder="Service Date" style="height: 55px;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="date">
+                                        <input type="text" name="phone" class="form-control border-0" placeholder="Mobile" style="height: 55px;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="date">
+                                        <input type="text" name="address" class="form-control border-0" placeholder="Address" style="height: 55px;">
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <textarea class="form-control border-0" placeholder="Special Request"></textarea>
+                                    <textarea class="form-control border-0" name="special_request" placeholder="Special Request"></textarea>
                                 </div>
                                 <div class="col-12">
                                     <button class="btn btn-secondary w-100 py-3" type="submit">Book Now</button>
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -511,7 +522,27 @@
 
 
 
-    
+    @if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: 'Booking Successful!',
+            icon: 'success',
+            html: `
+                <b>Name:</b> {{ old('name', session('name')) }} <br>
+                <b>Email:</b> {{ old('email', session('email')) }} <br>
+                <b>Service:</b> {{ old('service', session('service')) }} <br>
+                <b>Service Date:</b> {{ old('service_date', session('service_date')) }} <br>
+                <b>Special Request:</b> {{ old('special_request', session('special_request')) }} <br>
+                <b>Phone:</b> {{ old('phone', session('phone')) }} <br>
+                <b>Address:</b> {{ old('address', session('address')) }}
+            `,
+            confirmButtonText: 'OK'
+        });
+    </script>
+    @endif
+
+
     @endsection
     <!-- Testimonial End -->
 

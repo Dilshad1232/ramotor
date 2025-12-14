@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -27,21 +28,26 @@ class HomeController extends Controller
     {
         return view('contact');
     }
-    public function booking()
-    {
-        return view('booking');
-    }
+
     public function team()
     {
         return view('team');
     }
+/*************  ✨ Windsurf Command 🌟  *************/
+    /**
+     * Display the testimonial page.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function testimonial()
     {
         return view('testimonial');
     }
+/*******  a5b127bc-ddae-45a4-8d5c-283094e08f3a  *******/
     public function notFound()
     {
         return view('404');
     }
 
+  
 }

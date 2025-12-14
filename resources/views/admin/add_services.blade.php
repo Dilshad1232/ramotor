@@ -2,165 +2,343 @@
 @section('title','Services')
 
 @section('content')
-<div class="container-fluid py-3">
 
-    <!-- Page Title -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="fw-bold m-0" style="color:#ff3232;">Services</h3>
-        <a href="#" class="btn text-white fw-semibold px-3" style="background:#ff3232;">
-            <i class="fa fa-plus"></i> Add Service
-        </a>
-    </div>
-    <hr>
+<style>
+body {
+    background: #121212;
+    font-family: 'Poppins', sans-serif;
+}
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+.page-title {
+    color:#ff4d4d;
+    font-size:1.8rem;
+    font-weight:700;
+    margin-bottom:20px;
+    text-align:center;
+}
 
-    {{-- 🔥 Add Service Form --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-white border-0 p-3">
-            <h5 class="fw-bold m-0" style="color:#ff3232;">
-                <i class="fa fa-gears me-1"></i> Add New Service
-            </h5>
+.glass-alert {
+    width:90%;
+    max-width:1100px;
+    margin:auto;
+    background:rgba(212,255,212,0.12);
+    border:1px solid #28a745;
+    color:#28e77a;
+    padding:12px 16px;
+    border-radius:12px;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.card-wrapper {
+    max-width:1100px;
+    margin:auto;
+    margin-top:25px;
+    padding:20px;
+}
+
+.card {
+    background:#1a1a1a;
+    padding:30px;
+    border-radius:22px;
+    box-shadow: 8px 8px 16px #0d0d0d,
+                -8px -8px 16px #262626;
+    border:1px solid #222;
+    color:#fff;
+}
+
+.card-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.card-header h3 {
+    color:#ff4d4d;
+    font-weight:700;
+    font-size:1.4rem;
+}
+
+.btn {
+    border:none;
+    padding:10px 20px;
+    border-radius:14px;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    box-shadow: 4px 4px 10px #0d0d0d,
+                -4px -4px 10px #262626;
+    transition:0.3s;
+}
+
+.add-btn {
+    background:#ff4d4d;
+    color:#fff;
+}
+
+.add-btn:hover {
+    background:#e63b3b;
+    letter-spacing:1px;
+}
+
+/* Inputs */
+.input-box {
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:none;
+    background:#1b1b1b;
+    color:#fff;
+    font-size:15px;
+    box-shadow: inset 4px 4px 8px #0b0b0b,
+                inset -4px -4px 8px #2a2a2a;
+    transition:0.3s;
+    margin-bottom:18px;
+}
+
+.input-box:focus {
+    outline:none;
+    box-shadow: inset 2px 2px 6px #0b0b0b,
+                inset -2px -2px 6px #2a2a2a,
+                0 0 8px #ff4d4d;
+    border:1px solid #ff4d4d;
+}
+
+/* Table Design */
+.table-wrapper {
+    margin-top:25px;
+    overflow-x:auto; /* Mobile fix */
+}
+
+.services-table {
+    width:100%;
+    border-collapse: collapse;
+    color: #fff;
+    min-width: 600px; /* ensures scroll on mobile */
+}
+
+.services-table th, .services-table td {
+    padding: 14px 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.services-table thead {
+    background: #ff4d4d;
+    color: #fff;
+}
+
+.services-table tbody tr {
+    border-bottom: 1px solid #222;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: inset 4px 4px 8px #0b0b0b,
+                inset -4px -4px 8px #2a2a2a;
+    border-radius: 12px;
+    margin-bottom: 6px;
+}
+
+.services-table tbody tr:hover {
+    background: rgba(255,77,77,0.1);
+}
+
+.tbl-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 2px 2px 6px #0d0d0d,
+                -2px -2px 6px #262626;
+}
+
+.tbl-icon {
+    font-size:22px;
+    color:#ff4d4d;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    align-items: center;
+}
+
+.tbl-edit, .tbl-delete {
+    padding:6px 12px;
+    border-radius:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.tbl-edit {
+    background: #00ff66;
+    color: #000;
+    box-shadow: 4px 4px 8px #0d0d0d,
+                -4px -4px 8px #262626;
+}
+.tbl-edit:hover { background:#00cc52; }
+
+.tbl-delete {
+    background:#ff4d4d;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    box-shadow: 4px 4px 8px #0d0d0d,
+                -4px -4px 8px #262626;
+}
+.tbl-delete:hover { background:#e60000; }
+
+.no-data {
+    text-align:center;
+    padding:20px 0;
+    color:#aaa;
+}
+
+/* Pagination + Search */
+.table-top {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.input-box.small {
+    width:150px;
+}
+
+.pagination-box button {
+    border:1px solid #ff4d4d;
+    background:none;
+    color:#ff4d4d;
+    padding:5px 12px;
+    border-radius:6px;
+    margin:2px;
+    transition:0.3s;
+}
+
+.pagination-box button.active,
+.pagination-box button:hover {
+    background:#ff4d4d;
+    color:#fff;
+}
+
+/* Mobile Horizontal Scroll Fix */
+@media(max-width:768px){
+    .table-wrapper {
+        overflow-x:auto; /* keep table scrollable */
+    }
+    .services-table {
+        min-width: 600px; /* ensures horizontal scroll */
+    }
+}
+</style>
+
+<h2 class="page-title">🛠️ Manage Services</h2>
+
+@if(session('success'))
+<div class="glass-alert">
+    {{ session('success') }}
+</div>
+@endif
+
+<div class="card-wrapper">
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fa fa-gears"></i> Add New Service</h3>
+            <a href="#" class="btn add-btn"><i class="fa fa-plus"></i> Add Service</a>
         </div>
-        <div class="card-body">
 
-            <form action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                <div class="row g-3">
-
-                    <!-- Title -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Title *</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="fa fa-heading text-secondary"></i></span>
-                            <input type="text" name="title" class="form-control" placeholder="Service Title *" required>
-                        </div>
-                    </div>
-
-                    <!-- Icon -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Icon Class *</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="fa fa-icons text-secondary"></i></span>
-                            <input type="text" name="icon" class="form-control" id="iconInput"
-                                   placeholder="e.g. fa-car-side, fa-tools"
-                                   onkeyup="previewIcon.className='fa '+this.value" required>
-                            <span class="input-group-text bg-white">
-                                <i id="previewIcon" class="fa fa-car-side text-danger"></i>
-                            </span>
-                        </div>
-                        <small class="text-muted">Enter full FontAwesome class (FA 6 Supported)</small>
-                    </div>
-
-                    <!-- Image -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Image *</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="fa fa-image text-secondary"></i></span>
-                            <input type="file" name="image" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="col-md-12">
-                        <label class="form-label fw-semibold">Description *</label>
-                        <textarea name="description" class="form-control" rows="2" placeholder="Short Description..." required></textarea>
-                    </div>
-
+        <form action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-grid">
+                <div>
+                    <label>Title *</label>
+                    <input type="text" name="title" class="input-box" placeholder="Service Title*" required>
                 </div>
 
-                <button class="btn mt-3 text-white fw-bold px-4" type="submit" style="background:#ff3232;">
-                    <i class="fa fa-check-circle me-1"></i> Save Service
-                </button>
-            </form>
+                <div>
+                    <label>Icon Class *</label>
+                    <div class="input-with-icon">
+                        <input type="text" name="icon" id="iconInput" class="input-box"
+                               placeholder="fa-car-side, fa-tools"
+                               onkeyup="previewIcon.className='fa '+this.value" required>
+                        <i id="previewIcon" class="fa fa-car-side icon-preview"></i>
+                    </div>
+                </div>
 
-        </div>
+                <div>
+                    <label>Image *</label>
+                    <input type="file" name="image" class="input-box" required>
+                </div>
+
+                <div class="full-row">
+                    <label>Description *</label>
+                    <textarea name="description" class="input-box" rows="2" placeholder="Short Description..." required></textarea>
+                </div>
+            </div>
+
+            <button class="btn submit-btn"><i class="fa fa-check-circle"></i> Save Service</button>
+        </form>
     </div>
 
-    {{-- 🔥 Table --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
+    <div class="table-wrapper">
+        <div class="table-top">
+            <input type="text" id="searchBox" class="input-box small" placeholder="Search services...">
+            <select id="entries" class="input-box small">
+                <option>5</option>
+                <option selected>10</option>
+                <option>25</option>
+                <option>50</option>
+            </select>
+        </div>
 
-            <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-                <input type="text" id="searchBox" class="form-control w-auto" placeholder="Search services...">
-                <select id="entries" class="form-select w-auto">
-                    <option>5</option>
-                    <option selected>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                </select>
-            </div>
+        <table class="services-table" id="serviceTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Icon</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($services as $i => $service)
+                <tr>
+                    <td> {{ $i+1 }} </td>
+                    <td>
+                        <img src="{{ asset('img/'.$service->image) }}" class="tbl-img">
+                    </td>
+                    <td> {{ $service->title }} </td>
+                    <td> <i class="fa {{ $service->icon }} tbl-icon"></i> </td>
+                    <td> {{ $service->description }} </td>
+                    <td class="action-buttons">
+                        <a href="{{ route('admin.services.edit',$service->id) }}" class="tbl-edit">Edit</a>
+                        <form action="{{ route('admin.services.delete',$service->id) }}" method="POST" onsubmit="return confirm('Delete this service?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="tbl-delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="no-data">No services found.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle text-center" id="serviceTable">
-                    <thead style="background:#ff3232; color:#fff;">
-                        <tr>
-                            <th>#</th>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Icon</th>
-                            <th>Description</th>
-                            <th width="160">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($services as $i => $service)
-                        <tr>
-                            <td>{{ $i+1 }}</td>
-                            <td>
-                                <img src="{{ asset('img/'.$service->image) }}" width="60" height="50" style="border-radius:6px;">
-                            </td>
-                            <td class="fw-semibold">{{ $service->title }}</td>
-                            <td>
-                                <i class="fa {{ $service->icon }}" style="font-size:22px; color:#ff3232;"></i>
-                            </td>
-                            <td>{{ $service->description }}</td>
-                            <td>
-                                <a href="{{ route('admin.services.edit',$service->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('admin.services.delete',$service->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button onclick="return confirm('Delete this service?')" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
-                <div id="recordInfo" class="fw-bold small"></div>
-                <div class="d-flex gap-1" id="paginationBtns"></div>
-            </div>
-
+        <div class="table-bottom">
+            <div id="recordInfo"></div>
+            <div id="paginationBtns" class="pagination-box"></div>
         </div>
     </div>
 </div>
 
-{{-- Pagination CSS --}}
-<style>
-#paginationBtns button {
-    border:1px solid #ff3232;
-    background:white;
-    color:#ff3232;
-    font-size:13px;
-    padding:5px 12px;
-    border-radius:6px;
-    font-weight:600;
-}
-#paginationBtns button.active,
-#paginationBtns button:hover {
-    background:#ff3232;
-    color:#fff;
-}
-.table td, .table th { vertical-align: middle; }
-</style>
-
-{{-- Search + Pagination --}}
 <script>
 let table = document.querySelector("#serviceTable tbody");
 let rows = table.querySelectorAll("tr");
@@ -200,8 +378,10 @@ function displayTable() {
         paginationBtns.appendChild(btn);
     }
 }
+
 entriesSelect.addEventListener("change", () => (currentPage = 1, displayTable()));
 searchBox.addEventListener("keyup", () => (currentPage = 1, displayTable()));
 document.addEventListener("DOMContentLoaded", displayTable);
 </script>
+
 @endsection

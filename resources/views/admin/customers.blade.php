@@ -10,7 +10,7 @@
             <h3 class="fw-bold m-0" style="color:#ff4d4d;">Customers List</h3>
 
             <div class="d-flex flex-wrap gap-2">
-                <a href="#" class="btn text-white fw-semibold px-3" style="background:#ff4d4d;">
+                <a href="{{ route('admin.add-user') }}" class="btn text-white fw-semibold px-3" style="background:#ff4d4d;">
                     <i class="fa fa-plus me-1"></i> New User
                 </a>
             </div>

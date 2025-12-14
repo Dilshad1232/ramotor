@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Contact;
 use App\Models\Mechanic;
 use App\Models\User;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AdminDashboardController extends Controller
 {
@@ -206,7 +208,7 @@ public function profile_update(Request $request)
 
     $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . $admin->id,
+        // 'email' => 'required|email|max:255|unique:users,email,' . $admin->id,
         'phone' => 'required|string|max:20',
         'password' => 'nullable|min:6|confirmed',
         'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -218,7 +220,7 @@ public function profile_update(Request $request)
     // Update normal fields
     $admin->fill([
         'name' => $request->name,
-        'email' => $request->email,
+        // 'email' => $request->email,
         'phone' => $request->phone,
         'address' => $request->address,
         'city' => $request->city,
@@ -260,4 +262,133 @@ public function profile_update(Request $request)
 
     return redirect()->route('admin.profile')->with('success', 'Profile updated successfully!');
 }
+
+ public function logout(Request $request)
+ {
+     Auth::logout();
+     $request->session()->invalidate();
+     $request->session()->regenerateToken();
+     return redirect('/login')->with('success', 'Logged out successfully!');
+ }
+ // Admin Bill Page
+ public function bill()
+ {
+     $products = Booking::all(); // Tumhare product table se fetch
+     return view('admin.bill', compact('products'));
+ }
+
+ public function searchUser(Request $request)
+ {
+     $query = $request->get('q');
+     $user = User::where('name', 'like', "%$query%")
+                 ->orWhere('email', 'like', "%$query%")
+                 ->first();
+
+     if($user){
+         return response()->json([
+             'status' => 'success',
+             'user' => $user
+         ]);
+     }
+     return response()->json([
+         'status' => 'error',
+         'message' => 'User not found!'
+     ]);
+ }
+ // Contact View Page
+//  public function contactView()
+//  {
+//     $contacts = Contact::all();
+//     $contacts = Contact::orderBy('id', 'DESC')->paginate(10);
+
+
+//      return view('admin.contactview', compact('contacts'));
+//  }
+public function contactView(Request $request)
+{
+    $query = Contact::query();
+
+    // Search keyword
+    if ($request->search) {
+        $query->where('name', 'like', "%{$request->search}%")
+            ->orWhere('email', 'like', "%{$request->search}%")
+            ->orWhere('phone', 'like', "%{$request->search}%")
+            ->orWhere('subject', 'like', "%{$request->search}%");
+    }
+
+    // Date filter
+    if ($request->from_date && $request->to_date) {
+        $query->whereBetween('created_at', [
+            $request->from_date . " 00:00:00",
+            $request->to_date . " 23:59:59"
+        ]);
+    }
+
+
+
+
+
+
+    // Pagination
+    $contacts = $query->orderBy('id', 'DESC')->paginate(5);
+
+    return view('admin.contactview', compact('contacts'));
+}
+
+
+ // Contact Delete
+ public function contactdestroy($id)
+ {
+     $contact = Contact::findOrFail($id);
+     $contact->delete();
+
+     return redirect()->back()->with('success', 'Message deleted successfully!');
+ }
+
+ // Add User Page
+ public function add_user()
+ {
+     return view('admin.add_user');
+ }
+
+ // Store User
+ public function user_store(Request $request)
+ {
+    // if($validator->fails()){
+    //     return response()->json(['status'=>false,'message'=>'Validation Error','errors'=>$validator->errors()],422);
+    // }
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email'=> 'required|email|unique:users,email',
+        'phone'=> 'required|string|max:15',
+        'address'=> 'nullable|string|max:255',
+        'city'=> 'nullable|string|max:255',
+        'pincode'=> 'nullable|string|max:10',
+        'password'=> 'required|min:5|confirmed',
+        'profile_image'=> 'required|image|mimes:jpg,png,jpeg|max:2048',
+    ]);
+
+    // Image upload
+    $filename = null;
+    if($request->hasFile('profile_image')){
+        $filename = time().'_'.$request->profile_image->getClientOriginalName();
+        $request->profile_image->move(public_path('uploads/profile'), $filename);
+    }
+
+    $user = User::create([
+        'name'=>$request->name,
+        'email'=>$request->email,
+        'phone'=>$request->phone,
+        'address'=>$request->address,
+        'city'=>$request->city,
+        'pincode'=>$request->pincode,
+        'password'=>Hash::make($request->password),
+        'showpassword'=>$request->password,
+        'profile_image'=>$filename,
+        'role'=>'user',
+        'status'=>1
+    ]);
+     return redirect()->route('admin.customers')->with('success', 'User created successfully!');
+ }
+
 }

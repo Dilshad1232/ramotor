@@ -162,7 +162,11 @@ aside::-webkit-scrollbar-thumb{background:#ff4d4d;border-radius:10px;}
         </ul>
 
         <li><a href="{{ route('admin.bookings') }}"><i class="fa fa-clipboard-list me-2"></i> Booking Orders Management</a></li>
+
         <li><a href="#"><i class="fa fa-file-invoice-dollar me-2"></i> Invoice / Payment Management</a></li>
+        <li><a href="{{ route('admin.bill') }}"><i class="fa fa-clipboard-list me-2"></i> Bill</a></li>
+        <li><a href="{{ route('admin.contactview') }}"><i class="fa fa-clipboard-list me-2"></i> Contact View</a></li>
+
         <li><a href="{{ route('admin.profile') }}"><i class="fa fa-user-circle me-2"></i> Profile & Settings</a></li>
         <li>
             <form action="{{ route('logout') }}" method="POST">@csrf
@@ -230,6 +234,7 @@ aside::-webkit-scrollbar-thumb{background:#ff4d4d;border-radius:10px;}
     });
     </script>
 
+@yield('scripts')
 
 </body>
 </html>
